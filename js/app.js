@@ -73,7 +73,7 @@ function createCard(name) {
     i.setAttribute("class", "fa " + name);
 
     var li = document.createElement("li");
-    li.setAttribute("class", "card match");
+    li.setAttribute("class", "card");
     li.appendChild(i);
 
     return li;
