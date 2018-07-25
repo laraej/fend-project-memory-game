@@ -107,6 +107,24 @@ function updateMoveCounter() {
     var span = document.getElementById("moves");
 
     span.innerHTML = moveCounter;
+
+    updateStars();
+}
+
+function updateStars() {
+    var ul = document.getElementById("stars");
+
+    var children = ul.querySelectorAll("li");
+
+    for (var li of children) {
+        li.setAttribute("class", "");
+    }
+
+    if (moveCounter > 32)
+        ul.children[2].setAttribute("class", "lost");
+
+    if (moveCounter > 48)
+        ul.children[1].setAttribute("class", "lost");
 }
 
 function showCard(card) {
