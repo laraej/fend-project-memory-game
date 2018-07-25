@@ -82,4 +82,9 @@ function createCard(name) {
 // Shuffle deck at start.
 window.onload = function() {
     shuffleDeck();
+
+    // Shuffle deck on restart.
+    document.getElementById("restart").onclick = function() {
+        shuffleDeck();
+    };
 };
