@@ -81,7 +81,7 @@ function createCard(name) {
     return li;
 }
 
-
+var moveCounter = 0;
 
 function clickCard() {
     hideOpenCards();
@@ -91,6 +91,22 @@ function clickCard() {
     openCard(this);
 
     checkOpenCards();
+
+    moveCounter++;
+
+    updateMoveCounter();
+}
+
+function clearMoveCounter() {
+    moveCounter = 0;
+
+    updateMoveCounter();
+}
+
+function updateMoveCounter() {
+    var span = document.getElementById("moves");
+
+    span.innerHTML = moveCounter;
 }
 
 function showCard(card) {
@@ -170,10 +186,13 @@ function getSymbol(card) {
 window.onload = function() {
     shuffleDeck();
 
+    clearMoveCounter();
+
     // Shuffle deck and clear game state on restart.
     document.getElementById("restart").onclick = function() {
         shuffleDeck();
 
+        clearMoveCounter();
         clearOpenCards();
     };
 };
