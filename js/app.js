@@ -39,8 +39,8 @@ function shuffle(array) {
 
 function shuffleDeck() {
 
-    // All unique cards.
-    var uniques = [
+    // All unique symbols.
+    var symbols = [
         'fa-anchor',
         'fa-bicycle',
         'fa-bolt',
@@ -51,8 +51,8 @@ function shuffleDeck() {
         'fa-paper-plane-o'
     ];
 
-    // All cards, each unique card twice.
-    var cards = uniques.concat(uniques);
+    // All cards, each unique symbol twice.
+    var cards = symbols.concat(symbols);
 
     shuffle(cards);
 
@@ -76,15 +76,104 @@ function createCard(name) {
     li.setAttribute("class", "card");
     li.appendChild(i);
 
+    li.onclick = clickCard;
+
     return li;
+}
+
+
+
+function clickCard() {
+    hideOpenCards();
+
+    showCard(this);
+
+    openCard(this);
+
+    checkOpenCards();
+}
+
+function showCard(card) {
+    card.setAttribute("class", "card show open");
+}
+
+function hideCard(card) {
+    card.setAttribute("class", "card");
+}
+
+function markMatchingCard(card) {
+    card.setAttribute("class", "card show match");
+
+    // Remove event handler so that the matching card will not handle clicks anymore.
+    card.onclick = undefined;
+}
+
+function markIncorrectCard(card) {
+    card.setAttribute("class", "card show incorrect");
+}
+
+var openCards = [];
+
+function openCard(card) {
+    openCards.push(card);
+}
+
+function clearOpenCards() {
+    openCards = [];
+}
+
+function hideOpenCards() {
+    if (openCards.length === 2) {
+        hideCard(openCards[0]);
+        hideCard(openCards[1]);
+
+        clearOpenCards();
+    }
+}
+
+function checkOpenCards() {
+    if (openCards.length === 2) {
+        if (getSymbol(openCards[0]) === getSymbol(openCards[1])) {
+
+            // If the symbols match, mark both cards as matching.
+            markMatchingCard(openCards[0]);
+            markMatchingCard(openCards[1]);
+
+            // Clear open cards so that the matching cards won't be hidden on next click.
+            clearOpenCards();
+        }
+        else {
+            // If the symbols don't match, mark both cards as incorrect.
+            markIncorrectCard(openCards[0]);
+            markIncorrectCard(openCards[1]);
+
+            // Don't clear open cards yet so that the incorrect cards will be hidden on next click.
+        }
+    }
+}
+
+// Given a card ("li" element), get the symbol ("fa-" class in the inner "i" element).
+function getSymbol(card) {
+    var i = card.querySelector("i");
+
+    var classes = i.getAttribute("class").split(" ");
+
+    for (var c of classes)
+        if (c.indexOf("fa-") === 0)
+            return c;
+
+    // Should never happen.
+    return undefined;
 }
 
 // Shuffle deck at start.
 window.onload = function() {
     shuffleDeck();
 
-    // Shuffle deck on restart.
+    // Shuffle deck and clear game state on restart.
     document.getElementById("restart").onclick = function() {
         shuffleDeck();
+
+        clearOpenCards();
     };
 };
