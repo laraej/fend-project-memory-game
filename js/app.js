@@ -135,17 +135,20 @@ function updateStars() {
 
 function showCard(card) {
     card.setAttribute("class", "card show open");
+
+    // Remove event handler so that the card will not handle clicks anymore.
+    card.onclick = undefined;
 }
 
 function hideCard(card) {
     card.setAttribute("class", "card");
+
+    // Add event handler so that the card will again handle clicks.
+    card.onclick = clickCard;
 }
 
 function markMatchingCard(card) {
     card.setAttribute("class", "card show match");
-
-    // Remove event handler so that the matching card will not handle clicks anymore.
-    card.onclick = undefined;
 
     matchingCardCount++;
 
@@ -155,6 +158,9 @@ function markMatchingCard(card) {
 
 function markIncorrectCard(card) {
     card.setAttribute("class", "card show incorrect");
+
+    // Add event handler so that the card will again handle clicks.
+    card.onclick = clickCard;
 }
 
 var matchingCardCount = 0;
