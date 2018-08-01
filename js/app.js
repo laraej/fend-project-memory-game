@@ -37,6 +37,12 @@ function shuffle(array) {
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 
+var startedAt = Date.now();
+
+function resetTimer() {
+    startedAt = Date.now();
+}
+
 function shuffleDeck() {
 
     // All unique symbols.
@@ -140,16 +146,27 @@ function markMatchingCard(card) {
 
     // Remove event handler so that the matching card will not handle clicks anymore.
     card.onclick = undefined;
+
+    matchingCardCount++;
+
+    if (matchingCardCount === 16)
+        win();
 }
 
 function markIncorrectCard(card) {
     card.setAttribute("class", "card show incorrect");
 }
 
+var matchingCardCount = 0;
+
 var openCards = [];
 
 function openCard(card) {
     openCards.push(card);
+}
+
+function clearMatchingCardCount() {
+    matchingCardCount = 0;
 }
 
 function clearOpenCards() {
@@ -200,17 +217,55 @@ function getSymbol(card) {
     return undefined;
 }
 
+function win() {
+    hideDeck();
+    showWin();
+}
+
+function hideDeck() {
+    document.getElementById("deck").style.display = "none";
+}
+
+function showDeck() {
+    document.getElementById("deck").style.display = "flex";
+}
+
+function hideWin() {
+    document.getElementById("win").style.display = "none";
+}
+
+function showWin() {
+    document.getElementById("win").style.display = "flex";
+
+    var finishedAt = Date.now();
+
+    // The times are in milliseconds, so divide by 1000.
+    var time = (finishedAt - startedAt) / 1000.0;
+
+    // Show only one decimal in the result.
+    document.getElementById("time").innerHTML = time.toFixed(1);
+}
+
 // Shuffle deck at start.
 window.onload = function() {
     shuffleDeck();
 
     clearMoveCounter();
+    resetTimer();
 
     // Shuffle deck and clear game state on restart.
-    document.getElementById("restart").onclick = function() {
-        shuffleDeck();
+    var elements = document.querySelectorAll(".restart");
 
-        clearMoveCounter();
-        clearOpenCards();
+    for (var element of elements) {
+        element.onclick = function() {
+            hideWin();
+            showDeck();
+            shuffleDeck();
+
+            clearMatchingCardCount();
+            clearMoveCounter();
+            clearOpenCards();
+            resetTimer();
+        }
     };
 };
