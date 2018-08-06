@@ -15,8 +15,30 @@ function shuffle(array) {
 
 var startedAt = Date.now();
 
-function resetTimer() {
+var timerId = undefined;
+
+function startTimer() {
     startedAt = Date.now();
+
+    timerId = window.setInterval(updateTimer, 500);
+
+    updateTimer();
+}
+
+function updateTimer() {
+    // The times are in milliseconds, so divide by 1000.
+    var time = (Date.now() - startedAt) / 1000.0;
+
+    // Show only whole seconds in the result.
+    document.getElementById("timer").innerHTML = time.toFixed(0);
+}
+
+function stopTimer() {
+    if (timerId) {
+        window.clearInterval(timerId);
+
+        timerId = undefined;
+    }
 }
 
 function shuffleDeck() {
@@ -200,6 +222,7 @@ function getSymbol(card) {
 }
 
 function win() {
+    stopTimer();
     hideDeck();
     showWin();
 }
@@ -219,13 +242,9 @@ function hideWin() {
 function showWin() {
     document.getElementById("win").style.display = "flex";
 
-    var finishedAt = Date.now();
+    var timer = document.getElementById("timer");
 
-    // The times are in milliseconds, so divide by 1000.
-    var time = (finishedAt - startedAt) / 1000.0;
-
-    // Show only one decimal in the result.
-    document.getElementById("time").innerHTML = time.toFixed(1);
+    document.getElementById("time").innerHTML = timer.innerHTML;
 }
 
 // Shuffle deck at start.
@@ -233,7 +252,7 @@ window.onload = function() {
     shuffleDeck();
 
     clearMoveCounter();
-    resetTimer();
+    startTimer();
 
     // Shuffle deck and clear game state on restart.
     var elements = document.querySelectorAll(".restart");
@@ -247,7 +266,7 @@ window.onload = function() {
             clearMatchingCardCount();
             clearMoveCounter();
             clearOpenCards();
-            resetTimer();
+            startTimer();
         }
     };
 };
